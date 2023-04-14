@@ -1,5 +1,11 @@
 const { app, BrowserWindow, ipcMain, shell, dialog,desktopCapturer } = require('electron')
 const path = require('path')
+const{autoUpdater}=require('electron-updater')
+const log=require('electron-log');
+log.transports.file.resolvePath=()=>path.join('C:\Users\Vishwadeep Konga\Desktop\zipfiles\my-new-app','/logs/main.log')
+log.info('Hello,log');
+log.warn('Some problem appears')
+
 app.commandLine.appendSwitch('enable-features', 'DesktopCaptureApi')
 let mainWindow;
 
@@ -31,8 +37,20 @@ if (!gotTheLock) {
   // dialog.showErrorBox('Welcome Back', `You arrived from: ${url}`)
 console.log(url);
   createWindow(url);
+  autoUpdater.checkForUpdatesAndNotify()
   })
   
+  autoUpdater.on("update-available",()=>{
+    log.info("update-available")
+  })
+  autoUpdater.on("checking-for-update",()=>{
+    log.info("checking-for-update")
+  })
+  autoUpdater.on("download-progress",()=>{
+    log.info("download-progress")
+  })
+
+
   app.on('open-url', (event, url) => {
     if (url === 'customprotocol://close') {
       app.quit();
